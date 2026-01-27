@@ -1,14 +1,14 @@
-from fastapi import APIRouter, HTTPException, status, Request
+from fastapi import APIRouter, HTTPException, status, Request, Depends
 from core.limiter import limiter
-from schemas.user import UserCreate, UserRegistrationResponse
+from schemas.user import UserCreate, UserRegistrationResponse, MyProfileResponse
 from service.user import create_user, DuplicateResourceError, UserCreateFailedError
+from utils.auth import get_current_user
 
 router = APIRouter(
     prefix="/users", tags=["Users"]
 )
 
-
-@router.post("",
+@router.post("/",
              response_model=UserRegistrationResponse,
              status_code=status.HTTP_201_CREATED
              )
@@ -60,3 +60,21 @@ def register_user(
                 }
             }
         )
+
+@router.get(
+    "/me",
+    response_model=MyProfileResponse
+)
+def get_my_profile(
+    current_user: dict = Depends(get_current_user)
+):
+    return {
+        "status": "success",
+        "data": {
+            "id": current_user["id"],
+            "email": current_user["email"],
+            "nickname": current_user["nickname"],
+            "profile_image_url": current_user.get("profile_image_url"),
+            "created_at": current_user["created_at"],
+        }
+    }

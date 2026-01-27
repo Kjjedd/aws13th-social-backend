@@ -52,3 +52,6 @@ class UserInfo(BaseModel):
 # 최종 회원가입 응답 구조
 class UserRegistrationResponse(ResponseBase):
     data: UserInfo
+
+class MyProfileResponse(ResponseBase):
+    data: UserInfo

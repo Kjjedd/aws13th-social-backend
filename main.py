@@ -6,6 +6,8 @@ from slowapi.errors import RateLimitExceeded
 from slowapi.middleware import SlowAPIMiddleware
 from core.limiter import limiter
 from routers.users import router as users_router
+from routers.session import router as session_router
+
 
 app = FastAPI(
     title="Cloud Community API",
@@ -18,6 +20,7 @@ app.add_middleware(SlowAPIMiddleware)
 logging.basicConfig(level=logging.INFO)
 #라우터 등록
 app.include_router(users_router)
+app.include_router(session_router)
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(
